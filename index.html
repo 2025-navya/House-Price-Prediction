@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Housing Price Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>🏠 Housing Price Prediction</h1>
+        <form method="POST">
+            <label>Area:</label>
+            <input type="number" name="area" value="{{ input_data.area or '' }}" required><br>
+
+            <label>Bedrooms:</label>
+            <input type="number" name="bedrooms" value="{{ input_data.bedrooms or '' }}" required><br>
+
+            <label>Bathrooms:</label>
+            <input type="number" name="bathrooms" value="{{ input_data.bathrooms or '' }}" required><br>
+
+            <label>Stories:</label>
+            <input type="number" name="stories" value="{{ input_data.stories or '' }}" required><br>
+
+            {% for field in ['mainroad', 'guestroom', 'basement', 'hotwaterheating', 'airconditioning', 'prefarea'] %}
+                <label>{{ field.replace('_', ' ').title() }}:</label>
+                <select name="{{ field }}" required>
+                    <option value="yes" {% if input_data[field] == 'yes' %}selected{% endif %}>Yes</option>
+                    <option value="no" {% if input_data[field] == 'no' %}selected{% endif %}>No</option>
+                </select><br>
+            {% endfor %}
+
+            <label>Parking:</label>
+            <input type="number" name="parking" value="{{ input_data.parking or '' }}" required><br>
+
+            <label>Furnishing Status:</label>
+            <select name="furnishingstatus" required>
+                {% for option in ['furnished', 'semi-furnished', 'unfurnished'] %}
+                    <option value="{{ option }}" {% if input_data.furnishingstatus == option %}selected{% endif %}>{{ option.title() }}</option>
+                {% endfor %}
+            </select><br>
+
+            <button type="submit">Predict</button>
+        </form>
+
+        {% if prediction %}
+            <h2>🔮 Predicted Price: ₹ {{ prediction }}</h2>
+            <div class="visuals">
+                {{ visuals | safe }}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
